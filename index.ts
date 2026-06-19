@@ -1,11 +1,41 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import { createClient } from "redis";
+// import { sendEmail } from "./sendEmail";
+import { Queue } from "bullmq";
+import "./emailWorker";
+
 dotenv.config();
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
+// BullMQ Queue
+const emailQueue = new Queue("sendEmail", {
+  connection: {
+    url: process.env.REDIS_URL,
+  },
+});
+
+// BullMQ
+app.post("/send-email", async (req: Request, res: Response) => {
+  // const result = await sendEmail(req.body); // Time consuming, failure prone, No retry option
+  const result = await emailQueue.add("emailQueue", req.body, {
+    attempts: 3,
+    backoff: {
+      type: "exponential",
+      delay: 2000,
+    },
+  });
+
+  res.json({
+    status: 201,
+    message: "Please check your email for email verification!",
+    data: result,
+  });
+});
+
+// Redis Connection
 const redis = createClient({
   url: process.env.REDIS_URL,
 });
@@ -14,9 +44,9 @@ const connectRedis = async () => {
   await redis.connect();
   console.log("Redis connected");
 };
-
 connectRedis();
 
+// Redis
 app.get("/", async (req, res) => {
   // String
   await redis.set("name", "Rifat Mahmud");
