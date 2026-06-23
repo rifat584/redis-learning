@@ -1,0 +1,25 @@
+services:
+  my_first_docker:
+    build: .
+    container_name: redis-docker
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    volumes:
+      - .:/redis-docker
+      - /redis-docker/node_modules
+    command: pnpm dev
+
+  redis:
+    image: redis:latest
+    container_name: redis-latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

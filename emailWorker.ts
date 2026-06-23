@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { sendEmail } from "./sendEmail";
+import { sendEmail } from "./sendEmail.js";
 import dotenv from "dotenv";
 
 dotenv.config();

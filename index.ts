@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import { createClient } from "redis";
-// import { sendEmail } from "./sendEmail";
+// import { sendEmail } from "./sendEmail.js";
 import { Queue } from "bullmq";
-import "./emailWorker";
+import "./emailWorker.js";
 
 dotenv.config();
 const app = express();
