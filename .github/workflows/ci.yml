@@ -1,4 +1,4 @@
-name: redis-learning
+name: redis-learning-CI
 
 on:
   push:
@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
+
       - name: Node setup
         uses: actions/setup-node@v4
         with:

@@ -1,0 +1,29 @@
+name: redis-docker-CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+
+      - name: docker build image
+        run: docker build -t ${{secrets.DOCKER_USERNAME}}/redis-docker:latest .
+
+      - name: docker push image
+        run: docker push ${{secrets.DOCKER_USERNAME}}/redis-docker:latest
+
+      - name: deploy on render
+        run: curl -fsS -X POST "${{ secrets.DEPLOY_HOOK }}"
