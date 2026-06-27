@@ -47,9 +47,10 @@ const connectRedis = async () => {
 connectRedis();
 
 // Redis
-app.get("/", async (req, res) => {
+app.post("/", async (req, res) => {
+  const bodyData = req.body;
   // String
-  await redis.set("name", "Rifat Mahmud");
+  await redis.set("name", bodyData);
   await redis.set("otp", 123456, { EX: 30 }); //Set TTL
   const getName = await redis.get("name");
   const getOtp = await redis.get("otp");

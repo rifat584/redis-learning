@@ -1,0 +1,30 @@
+name: redis-learning
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  quality-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Node setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: install pnpm
+        run: npm -g install pnpm
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: check type errors
+        run: pnpm run build
+
+      - name: check prettier errors
+        run: pnpm run prettier-check
